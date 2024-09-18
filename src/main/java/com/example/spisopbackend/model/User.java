@@ -52,5 +52,19 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "companyId")
     )
     private Set<Company> companies;
+
+    public void updateUser(User userDetails) {
+
+        this.email = userDetails.getEmail();
+        this.firstName = userDetails.getFirstName();
+        this.lastName = userDetails.getLastName();
+        this.username = userDetails.getUsername();
+        this.profilePicture = userDetails.getProfilePicture();
+        this.isAdmin = userDetails.isAdmin();
+        this.address = userDetails.getAddress();
+        this.communities = userDetails.getCommunities();
+        this.companies = userDetails.getCompanies();
+
+    }
 }
 
