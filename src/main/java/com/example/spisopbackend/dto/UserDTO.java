@@ -3,6 +3,7 @@ package com.example.spisopbackend.dto;
 import com.example.spisopbackend.model.Address;
 import com.example.spisopbackend.model.Community;
 import com.example.spisopbackend.model.Company;
+import com.example.spisopbackend.model.User;
 import lombok.Data;
 
 import java.util.Set;
