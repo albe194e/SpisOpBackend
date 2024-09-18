@@ -11,6 +11,7 @@ public class Notification {
 
     @Id
     @Column(length = 36)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
