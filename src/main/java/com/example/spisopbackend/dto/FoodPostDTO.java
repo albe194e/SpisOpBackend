@@ -1,5 +1,9 @@
 package com.example.spisopbackend.dto;
 
+import com.example.spisopbackend.model.Allergy;
+import com.example.spisopbackend.model.Community;
+import com.example.spisopbackend.model.Company;
+import com.example.spisopbackend.model.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,8 +16,8 @@ public class FoodPostDTO {
     private String title;
     private String description;
     private BigDecimal price;
-    private UserDTO authorUser; // Reference to UserDto
-    private CompanyDTO authorCompany; // Reference to CompanyDto
-    private CommunityDTO community; // Reference to CommunityDto
-    private Set<AllergyDTO> allergies; // Many-to-Many relationship
+    private User authorUser; // Reference to UserDto
+    private Company authorCompany; // Reference to CompanyDto
+    private Community community; // Reference to CommunityDto
+    private Set<Allergy> allergies; // Many-to-Many relationship
 }
