@@ -1,5 +1,8 @@
 package com.example.spisopbackend.dto;
 
+import com.example.spisopbackend.model.Address;
+import com.example.spisopbackend.model.Community;
+import com.example.spisopbackend.model.Company;
 import lombok.Data;
 
 import java.util.Set;
@@ -13,7 +16,7 @@ public class UserDTO {
     private String username;
     private String profilePicture;
     private boolean isAdmin;
-    private AddressDTO address; // Reference to AddressDto
-    private Set<CommunityDTO> communities; // Many-to-Many relationship
-    private Set<CompanyDTO> companies; // Many-to-Many relationship
+    private Address address; // Reference to AddressDto
+    private Set<Community> communities; // Many-to-Many relationship
+    private Set<Company> companies; // Many-to-Many relationship
 }

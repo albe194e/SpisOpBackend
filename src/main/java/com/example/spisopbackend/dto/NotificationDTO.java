@@ -1,5 +1,6 @@
 package com.example.spisopbackend.dto;
 
+import com.example.spisopbackend.model.FoodPost;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,5 +9,5 @@ import java.time.LocalDateTime;
 public class NotificationDTO {
     private String id;
     private LocalDateTime timestamp;
-    private FoodPostDTO post; // Reference to FoodPostDto
+    private FoodPost post; // Reference to FoodPostDto
 }

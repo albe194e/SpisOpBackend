@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface FoodPostRepo extends JpaRepository<FoodPost, Integer> {
 
-    List<FoodPost> findByUserId(int userId);
+    List<FoodPost> findByAuthorUserId(String userId);
 
 }
