@@ -1,5 +1,6 @@
 package com.example.spisopbackend.dto;
 
+import com.example.spisopbackend.model.User;
 import lombok.Data;
 
 import java.util.Set;
@@ -8,6 +9,6 @@ import java.util.Set;
 public class CommunityDTO {
     private String id;
     private String name;
-    private UserDTO createdBy; // Reference to UserDto
-    private Set<UserDTO> users; // Many-to-Many relationship
+    private User createdBy; // Reference to UserDto
+    private Set<User> users; // Many-to-Many relationship
 }

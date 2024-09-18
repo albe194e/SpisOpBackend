@@ -6,6 +6,8 @@ import com.example.spisopbackend.repository.FoodPostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FoodPostService {
 
@@ -26,19 +28,19 @@ public class FoodPostService {
         return foodPostDTO;
     }
 
-    public void getFoodPosts() {
-        foodPostRepo.findAll();
+    public List<FoodPost> getFoodPosts() {
+        return foodPostRepo.findAll();
     }
 
-    public void getFoodPostById(int id) {
-        foodPostRepo.findById(id);
+    public FoodPost getFoodPostById(int id) {
+        return foodPostRepo.findById(id).orElse(null);
     }
 
-    public void getFoodPostsByUserId(int userId) {
-        foodPostRepo.findByUserId(userId);
+    public List<FoodPost> getFoodPostsByUserId(String userId) {
+        return foodPostRepo.findByAuthorUserId(userId);
     }
 
-    public void saveFoodPost(FoodPost foodPost) {
-        foodPostRepo.save(foodPost);
+    public FoodPost saveFoodPost(FoodPost foodPost) {
+        return foodPostRepo.save(foodPost);
     }
 }
