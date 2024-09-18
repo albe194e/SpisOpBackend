@@ -20,14 +20,4 @@ public class UserDTO {
     private Address address; // Reference to AddressDto
     private Set<Community> communities; // Many-to-Many relationship
     private Set<Company> companies; // Many-to-Many relationship
-    public void convertToUserDTO(User user) {
-
-        this.setId(user.getId());
-        this.setFirstName(user.getFirstName());
-        this.setLastName(user.getLastName());
-        this.setEmail(user.getEmail());
-        this.setUsername(user.getUsername());
-        this.setProfilePicture(user.getProfilePicture());
-
-    }
 }

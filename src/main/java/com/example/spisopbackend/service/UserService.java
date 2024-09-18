@@ -15,41 +15,49 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
-    public UserDTO getUserById(int id) {
+    public User getUserById(int id) {
 
         UserDTO userDTO = new UserDTO();
 
         Optional<User> foundUser = userRepo.findById(id);
-        if (foundUser.isEmpty()) {
-            return null;
-        }
-        userDTO.convertToUserDTO(foundUser.get());
-        return userDTO;
+        return foundUser.orElse(null);
+
     }
 
-    public UserDTO createUser(User user) {
+    public User createUser(User user) {
 
-        User savedUser = userRepo.save(user);
-        UserDTO userDTO = new UserDTO();
-        userDTO.convertToUserDTO(savedUser);
-        return userDTO;
+
+        return userRepo.save(user);
     }
 
-    public UserDTO updateUser(int id, User userDetails) {
+    public User updateUser(int id, User userDetails) {
 
         Optional<User> foundUser = userRepo.findById(id);
-        UserDTO userDTO = new UserDTO();
 
         if (foundUser.isEmpty()) {
             return null;
         }
         foundUser.ifPresent(user -> user.updateUser(userDetails));
-        userRepo.save(foundUser.get());
-        userDTO.convertToUserDTO(foundUser.get());
-        return userDTO;
+
+        return userRepo.save(foundUser.get());
     }
 
     public void deleteUser(int id) {
         userRepo.deleteById(id);
+    }
+
+    public UserDTO toDto(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setProfilePicture(user.getProfilePicture());
+        userDTO.setAdmin(user.isAdmin());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setCommunities(user.getCommunities());
+        userDTO.setCompanies(user.getCompanies());
+        return userDTO;
     }
 }
