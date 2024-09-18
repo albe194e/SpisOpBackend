@@ -18,6 +18,8 @@ public class FoodPostController {
     public List<FoodPostDTO> getFoodPosts() {
         List<FoodPost> foodPosts = foodPostService.getFoodPosts();
 
+        System.out.println("1111 foodPosts");
+
         return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
     }
 
