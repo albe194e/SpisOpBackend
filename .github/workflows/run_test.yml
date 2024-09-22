@@ -1,33 +1,24 @@
 name: CI - Build and Test
 
-# Trigger the workflow on push to specific branchesj
 on:
-  push:
+  push:          # Trigger on every push
     branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
+      - '*'      # Run on all branches
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up JDK 22 (or whatever version you need)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Use AdoptOpenJDK (Eclipse Temurin) for builds
-          java-version: '22' # Specify the JDK version, change it as needed
+          distribution: 'temurin'
+          java-version: '17' # Change to your required version
 
-      # Step 3: Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -36,6 +27,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Build and test the project using Maven
       - name: Build and run tests
-        run: mvn test
+        run: mvn clean verify
