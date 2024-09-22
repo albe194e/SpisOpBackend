@@ -26,4 +26,9 @@ public class FirstTest {
 
         assertEquals(2,1+1);
     }
+    @Test
+    void test3(){
+
+        assertEquals(2,1+1);
+    }
 }
