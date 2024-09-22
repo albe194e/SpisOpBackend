@@ -12,6 +12,18 @@ public class FirstTest {
     @Test
     void test(){
 
-        assertEquals(1,1);
+
+        assertEquals(2,1+1);
+    }
+
+    @Test
+    void test1(){
+
+        assertEquals(2,1+1);
+    }
+    @Test
+    void test2(){
+
+        assertEquals(2,1+1);
     }
 }
