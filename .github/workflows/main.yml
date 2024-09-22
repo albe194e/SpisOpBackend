@@ -26,6 +26,3 @@ jobs:
           title: "Pull request for new branch: ${{ github.ref_name }}"
           body: |
             This pull request was created automatically when the branch `${{ github.ref_name }}` was pushed.
-
-      - name: Output Pull Request URL
-        run: echo "Pull request created: ${{ steps.create_pr.outputs.pull-request-url }}"
