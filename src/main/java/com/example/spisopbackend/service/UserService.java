@@ -17,15 +17,12 @@ public class UserService {
     private UserRepo userRepo;
     public User getUserById(int id) {
 
-        UserDTO userDTO = new UserDTO();
-
         Optional<User> foundUser = userRepo.findById(id);
         return foundUser.orElse(null);
 
     }
 
     public User createUser(User user) {
-
 
         return userRepo.save(user);
     }

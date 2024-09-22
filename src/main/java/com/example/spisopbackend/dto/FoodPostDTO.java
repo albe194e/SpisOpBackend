@@ -11,10 +11,8 @@ import java.util.Set;
 
 @Data
 public class FoodPostDTO {
-    private String id;
-    private String image;
-    private String title;
-    private String description;
+    private int id;
+    private String image, title, description;
     private BigDecimal price;
     private User authorUser; // Reference to UserDto
     private Company authorCompany; // Reference to CompanyDto

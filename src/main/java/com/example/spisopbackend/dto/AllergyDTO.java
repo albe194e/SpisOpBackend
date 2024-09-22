@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class AllergyDTO {
-    private String id;
-    private String name;
-    private String icon;
-    private String description;
+    private int id;
+    private String name, icon, description;
 }

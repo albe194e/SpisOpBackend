@@ -11,11 +11,7 @@ import java.util.Set;
 @Data
 public class UserDTO {
     private String id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String username;
-    private String profilePicture;
+    private String firstName, lastName, email, username, profilePicture;
     private boolean isAdmin;
     private Address address; // Reference to AddressDto
     private Set<Community> communities; // Many-to-Many relationship

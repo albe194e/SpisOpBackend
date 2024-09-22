@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 public class CompanyDTO {
-    private String id;
+    private int id;
     private String name;
     private Address address; // Reference to AddressDto
     private Set<User> managers; // Many-to-Many relationship

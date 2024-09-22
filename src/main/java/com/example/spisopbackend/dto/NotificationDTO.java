@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class NotificationDTO {
-    private String id;
+    private int id;
     private LocalDateTime timestamp;
     private FoodPost post; // Reference to FoodPostDto
 }
