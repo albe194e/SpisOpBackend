@@ -8,16 +8,15 @@ on:
     paths-ignore:
       - '.github/**'
 
+permissions:
+  contents: write  # Ensure the workflow can write and create PRs
+
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v3
-
       - name: Create a Pull Request
-        id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
