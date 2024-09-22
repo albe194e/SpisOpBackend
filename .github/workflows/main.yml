@@ -7,7 +7,9 @@ on:
       - main
     paths-ignore:
       - '.github/**'
-
+permissions:
+  contents: write
+  
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
