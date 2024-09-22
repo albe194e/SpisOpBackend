@@ -38,4 +38,4 @@ jobs:
 
       # Step 4: Build and test the project using Maven
       - name: Build and run tests
-        run: mvn clean verify # You can use 'mvn test' or 'mvn clean install' based on your needs
+        run: mvn test
