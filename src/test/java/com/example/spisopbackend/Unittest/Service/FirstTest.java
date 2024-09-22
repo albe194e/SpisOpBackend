@@ -10,8 +10,18 @@ public class FirstTest {
 
 
     @Test
-    void test(){
+    void test1(){
 
-        assertEquals(1,1);
+        assertEquals(2,1+1);
+    }
+    @Test
+    void test2(){
+
+        assertEquals(2,1+1);
+    }
+    @Test
+    void test3(){
+
+        assertEquals(2,1+1);
     }
 }
