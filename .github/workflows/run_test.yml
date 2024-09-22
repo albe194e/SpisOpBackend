@@ -1,6 +1,6 @@
 name: CI - Build and Test
 
-# Trigger the workflow on push to specific branches
+# Trigger the workflow on push to specific branchesj
 on:
   push:
     branches:
