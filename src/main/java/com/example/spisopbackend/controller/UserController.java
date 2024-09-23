@@ -11,17 +11,17 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    //
     @Autowired
     private UserService userService;
 
+    //-----------------GET-----------------\\
     @GetMapping("/user/{id}")
     public UserDTO getUserById(@PathVariable int id) {
 
         User user = userService.getUserById(id);
         return userService.toDto(user);
     }
-
+    //-----------------POST----------------\\
     @PostMapping("/user")
     public UserDTO createUser(@RequestBody User user) {
 
@@ -29,6 +29,7 @@ public class UserController {
         return userService.toDto(newUser);
     }
 
+    //-----------------PUT-----------------\\
     @PutMapping("/user/{id}")
     public UserDTO updateUser(@PathVariable int id, @RequestBody User userDetails) {
 
@@ -36,6 +37,7 @@ public class UserController {
         return userService.toDto(updatedUser);
     }
 
+    //-----------------DELETE--------------\\
     @DeleteMapping("/user/{id}")
     public void deleteUser(@PathVariable int id) {
         userService.deleteUser(id);

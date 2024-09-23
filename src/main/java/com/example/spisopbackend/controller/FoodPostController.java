@@ -14,6 +14,7 @@ public class FoodPostController {
     @Autowired
     private FoodPostService foodPostService;
 
+    //-----------------GET-----------------\\
     @GetMapping("/foodposts")
     public List<FoodPostDTO> getFoodPosts() {
         List<FoodPost> foodPosts = foodPostService.getFoodPosts();
@@ -35,9 +36,13 @@ public class FoodPostController {
         return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
     }
 
+    //-----------------POST----------------\\
     @PostMapping("/foodpost")
     public FoodPostDTO saveFoodPost(@RequestBody FoodPost foodPost) {
         FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
         return foodPostService.toDto(savedFoodPost);
     }
+
+    //-----------------PUT-----------------\\
+    //-----------------DELETE--------------\\
 }
