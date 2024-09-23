@@ -24,7 +24,7 @@ public class FoodPostController {
         return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
     }
 
-    @GetMapping("/foodpost/{id}")
+    @GetMapping("/foodposts/{id}")
     public FoodPostDTO getFoodPostById(@PathVariable int id) {
         FoodPost foodPost = foodPostService.getFoodPostById(id);
         return foodPostService.toDto(foodPost);
@@ -37,12 +37,22 @@ public class FoodPostController {
     }
 
     //-----------------POST----------------\\
-    @PostMapping("/foodpost")
+    @PostMapping("/foodposts")
     public FoodPostDTO saveFoodPost(@RequestBody FoodPost foodPost) {
         FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
         return foodPostService.toDto(savedFoodPost);
     }
 
     //-----------------PUT-----------------\\
+    @PutMapping("/foodposts/{id}")
+    public FoodPostDTO updateFoodPost(@PathVariable int id, @RequestBody FoodPost foodPostDetails) {
+
+        FoodPost updatedFoodPost = foodPostService.updateFoodPost(id, foodPostDetails);
+        return foodPostService.toDto(updatedFoodPost);
+    }
     //-----------------DELETE--------------\\
+    @DeleteMapping("/foodposts/{id}")
+    public void deleteFoodPost(@PathVariable int id) {
+        foodPostService.deleteFoodPost(id);
+    }
 }

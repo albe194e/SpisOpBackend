@@ -2,6 +2,8 @@ package com.example.spisopbackend.model;
 
 import lombok.Data;
 import jakarta.persistence.*;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -47,4 +49,17 @@ public class FoodPost {
             inverseJoinColumns = @JoinColumn(name = "allergyId")
     )
     private Set<Allergy> allergies;
+
+    public void updateFoodPost(FoodPost foodPostDetails) {
+
+        this.id = foodPostDetails.getId();
+        this.image = foodPostDetails.getImage();
+        this.title = foodPostDetails.getTitle();
+        this.description = foodPostDetails.getDescription();
+        this.price = foodPostDetails.getPrice();
+        this.authorUser = foodPostDetails.getAuthorUser();
+        this.authorCompany = foodPostDetails.getAuthorCompany();
+        this.community = foodPostDetails.getCommunity();
+        this.allergies = foodPostDetails.getAllergies();
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FoodPostService {
@@ -42,5 +43,19 @@ public class FoodPostService {
 
     public FoodPost saveFoodPost(FoodPost foodPost) {
         return foodPostRepo.save(foodPost);
+    }
+
+    public FoodPost updateFoodPost(int id, FoodPost foodPostDetails) {
+        Optional<FoodPost> foundFoodPost = foodPostRepo.findById(id);
+
+        if (foundFoodPost.isEmpty()) {
+            return null;
+        }
+        foundFoodPost.ifPresent(foodPost ->  foodPost.updateFoodPost(foodPostDetails));
+
+        return foodPostRepo.save(foundFoodPost.get());
+    }
+    public void deleteFoodPost(int id) {
+        foodPostRepo.deleteById(id);
     }
 }

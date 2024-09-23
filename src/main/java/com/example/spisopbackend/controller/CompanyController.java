@@ -34,7 +34,7 @@ public class CompanyController {
         return companyService.toDto(updatedCompany);
     }
     //-----------------DELETE--------------\\
-    @DeleteMapping("company/{id}")
+    @DeleteMapping("/company/{id}")
     public void deleteCompany(@PathVariable int id) {
         companyService.deleteCompany(id);
     }
