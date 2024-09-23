@@ -29,4 +29,14 @@ public class Company {
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
     private Set<User> managers;
+
+    public void updateCompany(Company companyDetails) {
+
+        this.id = companyDetails.getId();
+        this.name = companyDetails.getName();
+        this.address = companyDetails.getAddress();
+        this.managers = companyDetails.getManagers();
+    }
+
+
 }
