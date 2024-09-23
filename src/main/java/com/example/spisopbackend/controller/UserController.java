@@ -16,7 +16,7 @@ public class UserController {
 
     //-----------------GET-----------------\\
     @GetMapping("/user/{id}")
-    public UserDTO getUserById(@PathVariable int id) {
+    public UserDTO getUserById(@PathVariable String id) {
 
         User user = userService.getUserById(id);
         return userService.toDto(user);
@@ -31,7 +31,7 @@ public class UserController {
 
     //-----------------PUT-----------------\\
     @PutMapping("/user/{id}")
-    public UserDTO updateUser(@PathVariable int id, @RequestBody User userDetails) {
+    public UserDTO updateUser(@PathVariable String id, @RequestBody User userDetails) {
 
         User updatedUser = userService.updateUser(id, userDetails);
         return userService.toDto(updatedUser);
@@ -39,7 +39,7 @@ public class UserController {
 
     //-----------------DELETE--------------\\
     @DeleteMapping("/user/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
     }
 }

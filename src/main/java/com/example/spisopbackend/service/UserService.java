@@ -15,7 +15,7 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
-    public User getUserById(int id) {
+    public User getUserById(String id) {
 
         Optional<User> foundUser = userRepo.findById(id);
         return foundUser.orElse(null);
@@ -27,7 +27,7 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User updateUser(int id, User userDetails) {
+    public User updateUser(String id, User userDetails) {
 
         Optional<User> foundUser = userRepo.findById(id);
 
@@ -39,7 +39,7 @@ public class UserService {
         return userRepo.save(foundUser.get());
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(String id) {
         userRepo.deleteById(id);
     }
 
