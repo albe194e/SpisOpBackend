@@ -38,7 +38,7 @@ public class FoodPostController {
 
     //-----------------POST----------------\\
     @PostMapping("/foodposts")
-    public FoodPostDTO saveFoodPost(@RequestBody FoodPost foodPost) {
+    public FoodPostDTO createFoodPost(@RequestBody FoodPost foodPost) {
         FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
         return foodPostService.toDto(savedFoodPost);
     }
