@@ -15,16 +15,16 @@ public class UserService {
 
     @Autowired
     private UserRepo userRepo;
-    public User getUserById(String id) {
+    public Optional<User> getUserById(String id) {
 
         Optional<User> foundUser = userRepo.findById(id);
-        return foundUser.orElse(null);
+        return foundUser;
 
     }
 
-    public User createUser(User user) {
-
-        return userRepo.save(user);
+    public Optional<User> createUser(User user) {
+        User savedUser = userRepo.save(user);
+        return Optional.ofNullable(savedUser);
     }
 
     public User updateUser(String id, User userDetails) {
