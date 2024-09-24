@@ -19,9 +19,15 @@ public class CommunityService {
     public Community getCommunityById(int id) {
         return communityRepo.findById(id).orElse(null);
     }
+
+    public List<Community> getCommunities() {
+        return communityRepo.findAll();
+    }
+
     public Community createCommunity(Community community) {
         return communityRepo.save(community);
     }
+
     public Community updateCommunity(int id, Community communityDetails) {
         Community community = communityRepo.findById(id).orElse(null);
         if (community == null) {

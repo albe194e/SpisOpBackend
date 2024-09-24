@@ -90,6 +90,27 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
+
+	<profiles>
+	<profile>
+		<id>local</id>
+		<properties>
+			<spring.profiles.active>local</spring.profiles.active>
+		</properties>
+	</profile>
+	<profile>
+		<id>prod</id>
+		<properties>
+			<spring.profiles.active>prod</spring.profiles.active>
+		</properties>
+	</profile>
+	</profiles>
 
 </project>

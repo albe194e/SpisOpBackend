@@ -25,6 +25,11 @@ public class CommunityController {
         List<Community> communities = communityService.getCommunitiesByUserId(userId);
         return communities.stream().map(community -> communityService.toDto(community)).toList();
     }
+    @GetMapping("/communities")
+    public List<CommunityDTO> getCommunities() {
+        List<Community> communities = communityService.getCommunities();
+        return communities.stream().map(community -> communityService.toDto(community)).toList();
+    }
 
     //-----------------POST-----------------\\
     @PostMapping("/community")
