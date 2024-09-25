@@ -1,6 +1,8 @@
 package com.example.spisopbackend.service;
 
 import aj.org.objectweb.asm.commons.Remapper;
+import com.example.spisopbackend.Exceptions.RepositoryException;
+import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.dto.UserDTO;
 import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.repository.UserRepo;
@@ -13,35 +15,47 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    //
+
     @Autowired
     private UserRepo userRepo;
     public Optional<User> getUserById(String id) {
 
-        Optional<User> foundUser = userRepo.findById(id);
-        return foundUser;
+        return userRepo.findById(id);
 
     }
 
     public Optional<User> createUser(User user) {
+
         User savedUser = userRepo.save(user);
-        return Optional.ofNullable(savedUser);
+        return Optional.of(savedUser);
     }
 
-    public User updateUser(String id, User userDetails) {
+    public Optional<User> updateUser(String id, User userDetails) {
 
         Optional<User> foundUser = userRepo.findById(id);
 
         if (foundUser.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         foundUser.ifPresent(user -> user.updateUser(userDetails));
-
-        return userRepo.save(foundUser.get());
+        User updatedUser = userRepo.save(foundUser.get());
+        return Optional.of(userRepo.save(updatedUser));
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(String id) throws RepositoryException {
+
+        // Check if user exists, throw exception if not
+        Optional<User> foundUser = userRepo.findById(id);
+        foundUser.orElseThrow();
+
+        // Delete user
         userRepo.deleteById(id);
+
+        // Check if user was deleted
+        Optional<User> deletedUser = userRepo.findById(id);
+        if (deletedUser.isPresent()) {
+            throw new RepositoryException("User was not deleted");
+        }
     }
 
     public UserDTO toDto(User user) {
