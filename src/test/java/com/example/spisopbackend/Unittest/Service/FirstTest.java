@@ -14,9 +14,4 @@ public class FirstTest {
 
         assertEquals(1,1);
     }
-    @Test
-    void test1(){
-
-        assertEquals(1,1);
-    }
 }
