@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'  # You can change to '16' or '18' if needed
+          node-version: '18'  # You can change to '16' or '18' if needed
 
       # Step 3: Install Newman
       - name: Install Newman
