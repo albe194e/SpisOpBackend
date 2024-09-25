@@ -23,4 +23,4 @@ jobs:
 
       # Step 4: Run the Postman collection using Newman
       - name: Run Postman Collection
-        run: newman run src/test/API/Integration Testing.postman_collection.json
+        run: newman run src/test/API/postman_collection.json
