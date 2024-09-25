@@ -12,6 +12,6 @@ public class FirstTest {
     @Test
     void test(){
 
-        assertEquals(1,1);
+        assertEquals(2,1+1);
     }
 }
