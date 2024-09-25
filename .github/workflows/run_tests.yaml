@@ -11,31 +11,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up JDK (Java 17 for Spring Boot, adjust the version as necessary)
+      # Step 2: Set up JDK
       - name: Set up JDK 22
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Or adopt-openjdk or other distributions
+          distribution: 'temurin'
           java-version: '22'
 
-      # Step 3: Set up Node.js for API tests (use version 16 or higher)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # Step 3: Cache Maven dependencies (for Spring Boot)
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
         with:
-          node-version: '18'  # Adjust Node.js version as needed
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
-      # Step 4: Install dependencies for Maven
+      # Step 4: Install dependencies for Maven (only if cache is missed)
       - name: Install Maven dependencies
-        run: mvn install
+        run: mvn install -DskipTests
+        if: steps.cache.outputs.cache-hit != 'true'
 
       # Step 5: Run Spring Boot Unit Tests using Maven
       - name: Run Unit Tests
-        run: mvn test  # This will run all your Spring Boot tests
-        continue-on-error: false  # Stop if unit tests fail
+        run: mvn test
 
-      # Step 6: Install Newman for running API tests
+      # Step 6: Cache Node.js dependencies (for Newman and Postman API tests)
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 7: Install Newman globally (only if cache is missed)
       - name: Install Newman
         run: npm install -g newman
+        if: steps.cache.outputs.cache-hit != 'true'
 
       # Step 7: Run API Tests using Newman (Postman collections)
       #- name: Run API Tests
