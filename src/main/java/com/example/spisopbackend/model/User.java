@@ -33,16 +33,7 @@ public class User {
     @Column
     private boolean isAdmin;
 
-    public User(String id, String firstName, String lastName, String email, String username, String profilePicture, boolean isAdmin) {
-        this.id = id;
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setEmail(email);
-        this.setUsername(username);
-        this.setProfilePicture(profilePicture);
-        this.setAdmin(isAdmin);
-    }
-    public User() {}
+
 
     @ManyToOne
     @JoinColumn(name = "addressId")
@@ -65,6 +56,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "companyId")
     )
     private Set<Company> companies;
+
+    public User(String id, String firstName, String lastName, String email, String username, String profilePicture, boolean isAdmin) {
+        this.id = id;
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setProfilePicture(profilePicture);
+        this.setAdmin(isAdmin);
+    }
+    public User() {}
 
     public void setFirstName(String firstName) {
 
@@ -164,10 +166,7 @@ public class User {
 
     public void setProfilePicture(String profilePicture) {
 
-        // We allow the profile picture to be empty
-        if (profilePicture == null || profilePicture.isEmpty()) {
-            return;
-        }
+
         // Check if the file extension is valid
         String extension = profilePicture.substring(profilePicture.lastIndexOf('.') + 1).toUpperCase();
         try {

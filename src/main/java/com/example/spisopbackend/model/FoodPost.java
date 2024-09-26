@@ -1,5 +1,6 @@
 package com.example.spisopbackend.model;
 
+import com.example.spisopbackend.Exceptions.ValidationException;
 import lombok.Data;
 import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +51,15 @@ public class FoodPost {
     )
     private Set<Allergy> allergies;
 
+    public FoodPost(int id, String title, String description, BigDecimal price) {
+        this.id = id;
+        this.setTitle(title);
+        this.setDescription(description);
+        this.setPrice(price);
+    }
+    public FoodPost() {
+    }
+
     public void updateFoodPost(FoodPost foodPostDetails) {
 
         this.id = foodPostDetails.getId();
@@ -61,5 +71,42 @@ public class FoodPost {
         this.authorCompany = foodPostDetails.getAuthorCompany();
         this.community = foodPostDetails.getCommunity();
         this.allergies = foodPostDetails.getAllergies();
+    }
+
+    public void setTitle(String title) {
+
+        if (title == null || title.isEmpty()) {
+            throw new ValidationException("Title cannot be empty");
+        }
+
+        // This will count emojis as 1 character, as they are interpreted as 2
+        int codePointCount = title.codePointCount(0, title.length());
+        if (codePointCount > 50) {
+            throw new ValidationException("Title cannot be longer than 50 characters");
+        }
+
+        if (title.trim().isEmpty()) {
+            throw new ValidationException("Title cannot be empty");
+        }
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+
+        if (description.trim().isEmpty()) {
+            description = "";
+        }
+        // Storing emojis in db counts as 1 character
+        int codePointCount = description.codePointCount(0, description.length());
+        System.out.println(codePointCount);
+        if (codePointCount > 255) {
+            throw new ValidationException("Title cannot be longer than 255 characters");
+        }
+
+        this.description = description;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }
