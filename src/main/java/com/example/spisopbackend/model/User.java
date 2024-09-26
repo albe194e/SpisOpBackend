@@ -122,12 +122,10 @@ public class User {
         if (lastName.length() > 30) {
             throw new ValidationException("Last name cannot be longer than 30 characters");
         }
-        if (!lastName.matches("^[a-zA-ZÆØÅæøå]+$")) {
+        if (!lastName.matches("^[a-zA-ZÆØÅæøå ]+$")) {
             throw new ValidationException("Last name can only contain letters");
         }
-        if (lastName.contains(" ")) {
-            throw new ValidationException("Last name cannot contain spaces");
-        }
+
         if (lastName.length() < 2) {
             throw new ValidationException("Last name must be at least 2 characters long");
         }
@@ -135,10 +133,23 @@ public class User {
         if (!lastName.substring(0, 1).matches("^[A-ZÆØÅ]")) {
             throw new ValidationException("Last name must start with a capital letter");
         }
-        // only the first letter is capitalized
-        if (!lastName.substring(1).matches("^[a-zæøå]+$")) {
-            throw new ValidationException("Last name must start with a capital letter followed by lowercase letters");
+        // Check multiple names for capital letter
+        if (lastName.contains(" ")) {
+            String[] names = lastName.split(" ");
+            for (String name : names) {
+                if (!name.substring(0, 1).matches("^[A-ZÆØÅ]")) {
+                    throw new ValidationException("Last names must start with a capital letter");
+                }
+                if (!name.substring(1).matches("^[a-zæøå]+$")) {
+                    throw new ValidationException("Last names must start with a capital letter followed by lowercase letters");
+                }
+            }
+        } else {
+            if (!lastName.substring(1).matches("^[a-zæøå]+$")) {
+                throw new ValidationException("Last name must start with a capital letter followed by lowercase letters");
+            }
         }
+
         this.lastName = lastName;
     }
 

@@ -24,6 +24,14 @@ public class CommunityService {
         return communityRepo.findAll();
     }
 
+    public List<Community> getCommunitiesByCreatedById(String userId) {
+        return communityRepo.findCommunitiesByCreatedBy_Id(userId);
+    }
+
+    public List<Community> getCommunitiesByUserId(String userId) {
+        return communityRepo.findCommunitiesByUsers_Id(userId);
+    }
+
     public Community createCommunity(Community community) {
         return communityRepo.save(community);
     }
@@ -52,7 +60,5 @@ public class CommunityService {
 
     }
 
-    public List<Community> getCommunitiesByUserId(String userId) {
-        return communityRepo.findCommunitiesByCreatedBy_Id(userId);
-    }
+
 }

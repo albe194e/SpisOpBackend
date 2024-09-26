@@ -170,17 +170,25 @@ public class UserTest {
         assertThrows(ValidationException.class, () -> user.setLastName(""));
     }
 
-    @Test
-    void testLastnameContainsSpace(){
-        assertThrows(ValidationException.class, () -> user.setLastName("Albert test"));
-    }
-
     @ParameterizedTest
     @CsvSource({
             "albert",
             "daniel",
     })
     void testFirstLetterNotCapitalizedLastname(String lastname){
+        assertThrows(ValidationException.class, () -> user.setLastName(lastname));
+    }
+    @ParameterizedTest
+    @CsvSource({
+            "John Michael doe",
+            "John michael Doe",
+            "John michael doe",
+            "john Michael Doe",
+            "john michael Doe",
+            "john Michael doe",
+            "john michael doe"
+    })
+    void testFirstLetterInEachNameIsCapitalized(String lastname){
         assertThrows(ValidationException.class, () -> user.setLastName(lastname));
     }
 

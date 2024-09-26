@@ -20,8 +20,13 @@ public class CommunityController {
         Community community = communityService.getCommunityById(id);
         return communityService.toDto(community);
     }
+    @GetMapping("/user/{userId}/owmed_communities")
+    public List<CommunityDTO> getCommunitiesCreatedBy(@PathVariable String userId) {
+        List<Community> communities = communityService.getCommunitiesByCreatedById(userId);
+        return communities.stream().map(community -> communityService.toDto(community)).toList();
+    }
     @GetMapping("/user/{userId}/communities")
-    public List<CommunityDTO> getCommunitiesByUserId(@PathVariable String userId) {
+    public List<CommunityDTO> get(@PathVariable String userId) {
         List<Community> communities = communityService.getCommunitiesByUserId(userId);
         return communities.stream().map(community -> communityService.toDto(community)).toList();
     }
