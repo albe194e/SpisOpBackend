@@ -41,6 +41,11 @@ public class FoodPostService {
         return foodPostRepo.findByAuthorUserId(userId);
     }
 
+    public List<FoodPost> getCummunityFoodPosts(int id) {
+
+        return foodPostRepo.findByCommunity_Id(id);
+    }
+
     public FoodPost saveFoodPost(FoodPost foodPost) {
         return foodPostRepo.save(foodPost);
     }
@@ -58,4 +63,6 @@ public class FoodPostService {
     public void deleteFoodPost(int id) {
         foodPostRepo.deleteById(id);
     }
+
+
 }

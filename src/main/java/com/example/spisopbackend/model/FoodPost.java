@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -29,6 +30,11 @@ public class FoodPost {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
+
+    @Column
+    private LocalDateTime createdAt;
+    @Column
+    private LocalDateTime lastUpdated;
 
     @ManyToOne
     @JoinColumn(name = "authorUserId")
@@ -56,6 +62,7 @@ public class FoodPost {
         this.setTitle(title);
         this.setDescription(description);
         this.setPrice(price);
+        this.setCreatedAt();
     }
     public FoodPost() {
     }
@@ -71,6 +78,7 @@ public class FoodPost {
         this.authorCompany = foodPostDetails.getAuthorCompany();
         this.community = foodPostDetails.getCommunity();
         this.allergies = foodPostDetails.getAllergies();
+        this.setLastUpdated();
     }
 
     public void setTitle(String title) {
@@ -104,6 +112,14 @@ public class FoodPost {
         }
 
         this.description = description;
+    }
+
+    public void setCreatedAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void setLastUpdated() {
+        this.lastUpdated = LocalDateTime.now();
     }
 
     public void setPrice(BigDecimal price) {

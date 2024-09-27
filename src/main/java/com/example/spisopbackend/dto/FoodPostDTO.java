@@ -7,6 +7,7 @@ import com.example.spisopbackend.model.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -15,6 +16,7 @@ public class FoodPostDTO {
     private String image, title, description;
     private BigDecimal price;
     private User authorUser; // Reference to UserDto
+    private LocalDateTime createdAt, lastUpdated;
     private Company authorCompany; // Reference to CompanyDto
     private Community community; // Reference to CommunityDto
     private Set<Allergy> allergies; // Many-to-Many relationship

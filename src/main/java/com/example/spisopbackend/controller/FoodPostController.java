@@ -4,6 +4,7 @@ import com.example.spisopbackend.dto.FoodPostDTO;
 import com.example.spisopbackend.model.FoodPost;
 import com.example.spisopbackend.service.FoodPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +36,21 @@ public class FoodPostController {
         List<FoodPost> foodPosts = foodPostService.getFoodPostsByUserId(userId);
         return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
     }
+    @GetMapping("/community/{id}/foodposts")
+    public ResponseEntity<List<FoodPostDTO>> getCommunityFoodPosts(@PathVariable int id) {
+
+        List<FoodPost> foodPosts = foodPostService.getCummunityFoodPosts(id);
+        return ResponseEntity.ok(foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList());
+    }
 
     //-----------------POST----------------\\
-    @PostMapping("/foodposts")
-    public FoodPostDTO createFoodPost(@RequestBody FoodPost foodPost) {
+    @PostMapping("/foodpost/community")
+    public FoodPostDTO createFoodPostForCommunity(@RequestBody FoodPost foodPost) {
+        FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
+        return foodPostService.toDto(savedFoodPost);
+    }
+    @PostMapping("/foodpost/company")
+    public FoodPostDTO createFoodPostForCompany(@RequestBody FoodPost foodPost) {
         FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
         return foodPostService.toDto(savedFoodPost);
     }
