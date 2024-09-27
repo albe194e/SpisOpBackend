@@ -25,12 +25,12 @@ public class UserController {
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
 
-        Optional<User> user = userService.getUserById(id);
-
-        if (user.isPresent()) {
-            return ResponseEntity.ok(userService.toDto(user.get()));
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            Optional<User> user = userService.getUserById(id);
+            return ResponseEntity.ok(userService.toDto(user.orElseThrow()));
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
     //-----------------POST----------------\\

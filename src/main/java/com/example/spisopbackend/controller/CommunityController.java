@@ -1,12 +1,19 @@
 package com.example.spisopbackend.controller;
 
+import com.example.spisopbackend.Exceptions.RepositoryException;
+import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.dto.CommunityDTO;
 import com.example.spisopbackend.model.Community;
+import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 public class CommunityController {
@@ -16,44 +23,78 @@ public class CommunityController {
 
     //-----------------GET-----------------\\
     @GetMapping("/community/{id}")
-    public CommunityDTO getCommunityById(@PathVariable int id) {
-        Community community = communityService.getCommunityById(id);
-        return communityService.toDto(community);
+    public ResponseEntity<CommunityDTO> getCommunityById(@PathVariable int id) {
+
+        try {
+            Optional<Community> community = communityService.getCommunityById(id);
+            return ResponseEntity.ok(communityService.toDto(community.orElseThrow()));
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
     @GetMapping("/user/{userId}/owmed_communities")
-    public List<CommunityDTO> getCommunitiesCreatedBy(@PathVariable String userId) {
+    public ResponseEntity<List<CommunityDTO>> getCommunitiesCreatedBy(@PathVariable String userId) {
         List<Community> communities = communityService.getCommunitiesByCreatedById(userId);
-        return communities.stream().map(community -> communityService.toDto(community)).toList();
+        return ResponseEntity.ok(communities.stream().map(community -> communityService.toDto(community)).toList());
     }
     @GetMapping("/user/{userId}/communities")
-    public List<CommunityDTO> get(@PathVariable String userId) {
+    public ResponseEntity<List<CommunityDTO>> getMembershipCommunities(@PathVariable String userId) {
         List<Community> communities = communityService.getCommunitiesByUserId(userId);
-        return communities.stream().map(community -> communityService.toDto(community)).toList();
+        return ResponseEntity.ok(communities.stream().map(community -> communityService.toDto(community)).toList());
     }
     @GetMapping("/communities")
-    public List<CommunityDTO> getCommunities() {
+    public ResponseEntity<List<CommunityDTO>> getCommunities() {
         List<Community> communities = communityService.getCommunities();
-        return communities.stream().map(community -> communityService.toDto(community)).toList();
+        return ResponseEntity.ok(communities.stream().map(community -> communityService.toDto(community)).toList());
     }
 
     //-----------------POST-----------------\\
     @PostMapping("/community")
-    public CommunityDTO createCommunity(@RequestBody Community community) {
-        Community newCommunity = communityService.createCommunity(community);
-        return communityService.toDto(newCommunity);
+    public ResponseEntity<CommunityDTO> createCommunity(@RequestBody Community community) {
+
+        try {
+            Optional<Community> newCommunity = communityService.createCommunity(community);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(communityService.toDto(newCommunity.orElseThrow()));
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     //-----------------PUT-----------------\\
     @PutMapping("/community/{id}")
-    public CommunityDTO updateCommunity(@PathVariable int id, @RequestBody Community communityDetails) {
-        Community updatedCommunity = communityService.updateCommunity(id, communityDetails);
-        return communityService.toDto(updatedCommunity);
+    public ResponseEntity<CommunityDTO> updateCommunity(@PathVariable int id, @RequestBody Community communityDetails) {
+        try {
+            Optional<Community> updatedCommunity = communityService.updateCommunity(id, communityDetails);
+            return ResponseEntity.ok()
+                    .body(communityService.toDto(updatedCommunity.orElseThrow()));
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     //-----------------DELETE-----------------\\
     @DeleteMapping("/community/{id}")
-    public void deleteCommunity(@PathVariable int id) {
-        communityService.deleteCommunity(id);
+    public ResponseEntity<Void> deleteCommunity(@PathVariable int id) {
+        try {
+            communityService.deleteCommunity(id);
+            return ResponseEntity.ok().build();
+        } catch (RepositoryException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 }
