@@ -6,7 +6,7 @@ on:
       - '**'  # Runs on all branches
   pull_request:
     branches:
-      - main  # Runs on pull requests targeting the main branch
+      - main  # Runs on pull requests targeting the main branch (no tests run here)
 
 jobs:
   test:
@@ -16,6 +16,8 @@ jobs:
       # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all branches to ensure we can access main
 
       # Step 2: Set up JDK for Java-based tests
       - name: Set up JDK 22
@@ -43,15 +45,15 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
           echo "BASE_URL=http://localhost:8080" >> $GITHUB_ENV
 
-      # Step 6: Start your application (API) only for pull requests to main
+      # Step 6: Start your application (API)
       - name: Start Application
-        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
-          mvn spring-boot:run &
+          mvn spring-boot:run &  # Start the application in the background
           sleep 20 # wait for the app to start
 
-      # Step 7: Run Unit Tests (Always on push)
+      # Step 7: Run Unit Tests (Only on push events)
       - name: Run Unit Tests
+        if: github.event_name == 'push'  # Run tests only on push
         run: mvn test
 
       # Step 8: Install Postman CLI (Only on pull requests to main)
