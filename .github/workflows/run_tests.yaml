@@ -1,6 +1,12 @@
-name: Run Tests with H2 and API
+name: Run Tests
 
-on: push
+on:
+  push:
+    branches:
+      - '**'  # Runs on all branches
+  pull_request:
+    branches:
+      - main  # Runs on pull requests targeting the main branch
 
 jobs:
   test:
@@ -41,23 +47,26 @@ jobs:
       - name: Start Application
         run: |
           mvn spring-boot:run &
-          sleep 30 # wait for the app to start
+          sleep 20 # wait for the app to start
 
-      # Step 7: Run Unit Tests
+      # Step 7: Run Unit Tests (Always on push)
       - name: Run Unit Tests
         run: mvn test
 
-      # Step 8: Install Postman CLI
+      # Step 8: Install Postman CLI (Only on pull requests to main)
       - name: Install Postman CLI
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
-      # Step 9: Login to Postman CLI using API key from GitHub Secrets
+      # Step 9: Login to Postman CLI using API key from GitHub Secrets (Only on pull requests to main)
       - name: Login to Postman CLI
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
 
-      # Step 10: Run Postman API Tests using the test database
+      # Step 10: Run Postman API Tests using the test database (Only on pull requests to main)
       - name: Run API tests
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
-          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3c" \
-            --env-var base_url="$BASE_URL" \
+          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3" \
+            --env-var base_url="$BASE_URL"

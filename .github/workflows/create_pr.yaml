@@ -1,0 +1,45 @@
+name: Create Pull Request on First Push
+
+on:
+  push:
+    branches:
+      - '**'  # This runs for any branch
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure GitHub CLI
+      - name: Configure GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      # Step 3: Check for Existing PRs
+      - name: Check for Existing PRs
+        id: check_pr
+        run: |
+          BRANCH_NAME=${GITHUB_REF##*/}
+          echo "Branch Name: $BRANCH_NAME"
+          
+          # Get the list of open PRs for this branch
+          PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --json state --jq '.[] | select(.state == "OPEN") | .state')
+          echo "PR Exists: $PR_EXISTS"
+          
+          if [ -z "$PR_EXISTS" ]; then
+            echo "no-existing-pr=true" >> $GITHUB_ENV
+          else
+            echo "no-existing-pr=false" >> $GITHUB_ENV
+          fi
+
+      # Step 4: Create a PR if there isn't one already and it's not the main branch
+      - name: Create Pull Request
+        if: env.no-existing-pr == 'true' && github.ref != 'refs/heads/main'
+        run: |
+          BRANCH_NAME=${GITHUB_REF##*/}
+          echo "Creating PR for branch: $BRANCH_NAME"
+          gh pr create --base main --head "$BRANCH_NAME" --title "Auto PR from $BRANCH_NAME" --body "This PR was automatically created from the branch $BRANCH_NAME."
