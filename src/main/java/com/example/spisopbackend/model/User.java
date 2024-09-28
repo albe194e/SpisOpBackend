@@ -5,7 +5,7 @@ import com.example.spisopbackend.utils.enums.AcceptedImageFormats;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Set;
-
+//fd
 @Data
 @Entity
 @Table(name = "User")
