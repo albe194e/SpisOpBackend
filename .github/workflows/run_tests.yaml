@@ -56,8 +56,8 @@ jobs:
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
 
-      # Step 10: Run Postman API Tests
+      # Step 10: Run Postman API Tests using the test database
       - name: Run API tests
         run: |
-          postman collection run "your_collection_id" -e "your_environment_id" \
-            --env-var base_url="$BASE_URL"
+          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3c" \
+            --env-var base_url="$BASE_URL" \
