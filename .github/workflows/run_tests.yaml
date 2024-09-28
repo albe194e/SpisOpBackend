@@ -16,6 +16,8 @@ jobs:
       # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all branches to ensure we can access main
 
       # Step 2: Set up JDK for Java-based tests
       - name: Set up JDK 22
@@ -50,9 +52,9 @@ jobs:
           mvn spring-boot:run &  # Start the application in the background
           sleep 20 # wait for the app to start
 
-      # Step 7: Run Unit Tests (Only on push events)
+      # Step 7: Run Unit Tests (Only on all branches except main)
       - name: Run Unit Tests
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref != 'refs/heads/main'
         run: mvn test
 
       # Step 8: Install Postman CLI (Only on pull requests to main)
@@ -72,3 +74,8 @@ jobs:
         run: |
           postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3" \
             --env-var base_url="$BASE_URL"
+
+      # Step 11: Run Unit Tests (if it's a PR)
+      - name: Run Unit Tests (if it's a PR)
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        run: mvn test
