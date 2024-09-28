@@ -1,13 +1,10 @@
 package com.example.spisopbackend.service;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.example.spisopbackend.Exceptions.RepositoryException;
-import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.dto.UserDTO;
 import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -46,10 +43,10 @@ public class UserService {
 
         // Check if user exists, throw exception if not
         Optional<User> foundUser = userRepo.findById(id);
-        foundUser.orElseThrow();
+        User user = foundUser.orElseThrow();
 
         // Delete user
-        userRepo.deleteById(id);
+        userRepo.deleteById(user.getId());
 
         // Check if user was deleted
         Optional<User> deletedUser = userRepo.findById(id);

@@ -43,14 +43,16 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
           echo "BASE_URL=http://localhost:8080" >> $GITHUB_ENV
 
-      # Step 6: Start your application (API)
+      # Step 6: Start your application (API) only for pull requests to main
       - name: Start Application
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
-          mvn spring-boot:run &
+          mvn spring-boot:run &  # Start the application in the background
           sleep 20 # wait for the app to start
 
-      # Step 7: Run Unit Tests (Always on push)
+      # Step 7: Run Unit Tests (Only on push events)
       - name: Run Unit Tests
+        if: github.event_name == 'push'
         run: mvn test
 
       # Step 8: Install Postman CLI (Only on pull requests to main)
