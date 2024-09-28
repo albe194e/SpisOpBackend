@@ -18,9 +18,9 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h localhost -u root --password=root_password"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 10
 
     steps:
       - name: Checkout code
@@ -46,7 +46,7 @@ jobs:
       # Step: Wait for MySQL to be ready
       - name: Wait for MySQL
         run: |
-          until mysqladmin ping -h "localhost" -u "test_user" --password="test_password" --silent; do
+          until mysqladmin ping -h "localhost" -u "root" --password="root_password" --silent; do
             echo "Waiting for MySQL..."
             sleep 10 # Increased wait time
           done
@@ -54,7 +54,19 @@ jobs:
       # Check MySQL logs if still not ready
       - name: Check MySQL Logs
         run: |
+          echo "MySQL logs:"
           docker logs $(docker ps -q --filter "ancestor=mysql:8.0") || echo "No MySQL container found"
+
+      # Check Port Binding
+      - name: Check Port Binding
+        run: |
+          docker ps
+          netstat -tuln | grep LISTEN
+
+      # Try to connect to MySQL directly
+      - name: Connect to MySQL
+        run: |
+          mysql -h "localhost" -u "test_user" --password="test_password" -e "SHOW DATABASES;"
 
       # Set environment variables for Spring Boot
       - name: Set Environment Variables
@@ -82,7 +94,6 @@ jobs:
       # Login to Postman CLI using API key from GitHub Secrets
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-
       # Step 11: Run Postman API Tests using the test database
       - name: Run API tests
         run: |
