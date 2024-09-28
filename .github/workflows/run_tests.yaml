@@ -64,6 +64,14 @@ jobs:
           mvn spring-boot:run &
           sleep 30 # wait for the app to start
 
+      # Step 8.1: Wait for MySQL to be ready
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h "localhost" -u "test_user" --password="test_password" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
+
       # Step 9: Install Postman CLI
       - name: Install Postman CLI
         run: |
