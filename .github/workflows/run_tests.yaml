@@ -43,14 +43,6 @@ jobs:
       - name: Install Maven dependencies (without running tests)
         run: mvn install -DskipTests
 
-      # Step: Wait for MySQL to be ready
-      - name: Wait for MySQL
-        run: |
-          until mysqladmin ping -h "localhost" -u "root" --password="root_password" --silent; do
-            echo "Waiting for MySQL..."
-            sleep 10 # Increased wait time
-          done
-
       # Check MySQL logs if still not ready
       - name: Check MySQL Logs
         run: |
@@ -67,6 +59,16 @@ jobs:
       - name: Connect to MySQL
         run: |
           mysql -h "localhost" -u "test_user" --password="test_password" -e "SHOW DATABASES;"
+
+
+      # Step: Wait for MySQL to be ready
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h "localhost" -u "root" --password="root_password" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 10 # Increased wait time
+          done
+
 
       # Set environment variables for Spring Boot
       - name: Set Environment Variables
