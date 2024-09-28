@@ -1,45 +1,41 @@
-name: Create Pull Request on First Push
+name: Create PR on Branch Push
 
 on:
   push:
     branches:
-      - '**'  # This runs for any branch
+      - '**'  # Runs on all branches except main (handled in the workflow)
 
 jobs:
-  create-pr:
+  create_pr:
+    if: github.ref != 'refs/heads/main'  # Only run if the push is NOT to main
     runs-on: ubuntu-latest
-#FDF
+
     steps:
-      # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Configure GitHub CLI
-      - name: Configure GitHub CLI
+      - name: Set up Git
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 3: Check for Existing PRs
-      - name: Check for Existing PRs
-        id: check_pr
+      - name: Get branch name
+        id: get_branch
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+      - name: Check for commits
         run: |
-          BRANCH_NAME=${GITHUB_REF##*/}
-          echo "Branch Name: $BRANCH_NAME"
-          
-          # Get the list of open PRs for this branch
-          PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --json state --jq '.[] | select(.state == "OPEN") | .state')
-          echo "PR Exists: $PR_EXISTS"
-          
-          if [ -z "$PR_EXISTS" ]; then
-            echo "no-existing-pr=true" >> $GITHUB_ENV
-          else
-            echo "no-existing-pr=false" >> $GITHUB_ENV
+          git fetch origin main
+          if [ -z "$(git log origin/main..${GITHUB_REF##*/} --oneline)" ]; then
+            echo "No new commits to create a pull request."
+            exit 1
           fi
 
-      # Step 4: Create a PR if there isn't one already and it's not the main branch
       - name: Create Pull Request
-        if: env.no-existing-pr == 'true' && github.ref != 'refs/heads/main'
-        run: |
-          BRANCH_NAME=${GITHUB_REF##*/}
-          echo "Creating PR for branch: $BRANCH_NAME"
-          gh pr create --base main --head "$BRANCH_NAME" --title "Auto PR from $BRANCH_NAME" --body "This PR was automatically created from the branch $BRANCH_NAME."
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: ${{ env.BRANCH_NAME }}
+          title: "Automated PR for branch: ${{ env.BRANCH_NAME }}"
+          body: "This is an automated pull request created from branch: ${{ env.BRANCH_NAME }}."
