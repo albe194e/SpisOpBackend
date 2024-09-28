@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run API Tests
 
 on:
   push:
@@ -11,20 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all branches to ensure we can access main
 
-      # Step 2: Set up JDK for Java-based tests
       - name: Set up JDK 22
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '22'
 
-      # Step 3: Cache Maven dependencies
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -33,11 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Install Maven dependencies (without running tests)
       - name: Install Maven dependencies
         run: mvn install -DskipTests
 
-      # Step 5: Set environment variables for H2 and your application
       - name: Set Environment Variables
         run: |
           echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
