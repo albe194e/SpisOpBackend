@@ -68,5 +68,5 @@ jobs:
       - name: Run API tests
         if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
-          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3" \
+          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3c" \
             --env-var base_url="$BASE_URL"
