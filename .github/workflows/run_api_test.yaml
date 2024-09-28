@@ -1,9 +1,10 @@
 name: Run API Tests
 
 on:
-  pull_request:
+  push:
     branches:
-      - main  # Runs on pull requests targeting the main branch
+      - '**'  # Runs on all branches except main
+      - '!main'  # Excludes the main branch
 
 jobs:
   test:
@@ -37,18 +38,26 @@ jobs:
           echo "SPRING_PROFILES_ACTIVE=test" >> $GITHUB_ENV
           echo "BASE_URL=http://localhost:8080" >> $GITHUB_ENV
 
+      # Step 6: Start your application (API) only if it's a push event
       - name: Start Application
         run: |
           mvn spring-boot:run &  # Start the application in the background
           sleep 20 # wait for the app to start
 
+      # Step 7: Run Unit Tests (Always run on branches except main)
+      - name: Run Unit Tests
+        run: mvn test
+
+      # Step 8: Install Postman CLI
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
+      # Step 9: Login to Postman CLI using API key from GitHub Secrets
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
 
+      # Step 10: Run Postman API Tests using the test database
       - name: Run API tests
         run: |
           postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3c" \
