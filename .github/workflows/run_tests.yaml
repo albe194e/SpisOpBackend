@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run Tests with MySQL and API
 
 on: push
 
@@ -6,19 +6,36 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      # Step 1: Spin up a MySQL container for tests
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+          MYSQL_ROOT_PASSWORD: root_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      # Step 1: Checkout the code from the repository
+      # Step 2: Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up JDK
+      # Step 3: Set up JDK for Java-based tests
       - name: Set up JDK 22
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '22'
 
-      # Step 3: Cache Maven dependencies (for Spring Boot)
+      # Step 4: Cache Maven dependencies
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -27,31 +44,36 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Step 4: Install dependencies for Maven (only if cache is missed)
+      # Step 5: Install Maven dependencies (without running tests)
       - name: Install Maven dependencies
         run: mvn install -DskipTests
-        if: steps.cache.outputs.cache-hit != 'true'
 
-      # Step 5: Run Spring Boot Unit Tests using Maven
+      # Step 6: Run Unit Tests
       - name: Run Unit Tests
         run: mvn test
 
-      # Step 6: Cache Node.js dependencies (for Newman and Postman API tests)
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      # Step 7: Set environment variables (for MySQL and API)
+      - name: Set Environment Variables
+        run: |
+          echo "BASE_URL=http://localhost:8080" >> $GITHUB_ENV
+          echo "DATABASE_URL=mysql://test_user:test_password@localhost:3306/test_db" >> $GITHUB_ENV
 
-      # Step 7: Install Newman globally (only if cache is missed)
-      - name: Install Newman
-        run: npm install -g newman
-        if: steps.cache.outputs.cache-hit != 'true'
+      # Step 8: Start your application (API)
+      - name: Start Application
+        run: |
+          mvn spring-boot:run &
+          sleep 30 # wait for the app to start
 
-      # Step 7: Run API Tests using Newman (Postman collections)
-      #- name: Run API Tests
-      #  run: newman run ./path/to/your-api-collection.postman_collection.json \
-      #    --env-var "base_url=${{ secrets.PROD_BASE_URL }}" \
-      #    --env-var "api_key=${{ secrets.PROD_API_KEY }}"
+      # Step 9: Install Postman CLI
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      # Step 10: Login to Postman CLI using API key from GitHub Secrets
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      # Step 11: Run Postman API Tests using the test database
+      - name: Run API tests
+        run: |
+          postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3c" --env-var base_url="$BASE_URL" --env-var database_url="$DATABASE_URL"
