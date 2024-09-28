@@ -3,7 +3,7 @@ name: Run Tests
 on:
   push:
     branches:
-      - '**'  # Runs on all branches
+      - '**'  # Runs on all branches except main
   pull_request:
     branches:
       - main  # Runs on pull requests targeting the main branch
@@ -52,30 +52,30 @@ jobs:
           mvn spring-boot:run &  # Start the application in the background
           sleep 20 # wait for the app to start
 
-      # Step 7: Run Unit Tests (Only on all branches except main)
+      # Step 7: Run Unit Tests (Always run on branches except main)
       - name: Run Unit Tests
         if: github.event_name == 'push' && github.ref != 'refs/heads/main'
         run: mvn test
 
-      # Step 8: Install Postman CLI (Only on pull requests to main)
+      # Step 8: Run Unit Tests (if it's a pull request to main)
+      - name: Run Unit Tests (if it's a PR)
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        run: mvn test
+
+      # Step 9: Install Postman CLI (Only on pull requests to main)
       - name: Install Postman CLI
         if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
-      # Step 9: Login to Postman CLI using API key from GitHub Secrets (Only on pull requests to main)
+      # Step 10: Login to Postman CLI using API key from GitHub Secrets (Only on pull requests to main)
       - name: Login to Postman CLI
         if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
 
-      # Step 10: Run Postman API Tests using the test database (Only on pull requests to main)
+      # Step 11: Run Postman API Tests using the test database (Only on pull requests to main)
       - name: Run API tests
         if: github.event_name == 'pull_request' && github.base_ref == 'main'
         run: |
           postman collection run "27701941-bcda9707-2e28-4e8c-9e39-176f60c7310c" -e "27701941-ab771043-acdc-4f32-a19e-3d0f50e03b3" \
             --env-var base_url="$BASE_URL"
-
-      # Step 11: Run Unit Tests (if it's a PR)
-      - name: Run Unit Tests (if it's a PR)
-        if: github.event_name == 'pull_request' && github.base_ref == 'main'
-        run: mvn test
