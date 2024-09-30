@@ -57,14 +57,17 @@ public class FoodPost {
     )
     private Set<Allergy> allergies;
 
-    public FoodPost(int id, String title, String description, BigDecimal price) {
-        this.id = id;
+    public FoodPost(String title, String description, BigDecimal price) {
         this.setTitle(title);
         this.setDescription(description);
         this.setPrice(price);
         this.setCreatedAt();
     }
     public FoodPost() {
+    }
+
+    public void addAllergy(Allergy allergy) {
+        this.allergies.add(allergy);
     }
 
     public void updateFoodPost(FoodPost foodPostDetails) {
