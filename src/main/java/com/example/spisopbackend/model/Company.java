@@ -30,6 +30,12 @@ public class Company {
     )
     private Set<User> managers;
 
+    public Company(String name) {
+        this.setName(name);
+    }
+    public Company() {
+    }
+
     public void updateCompany(Company companyDetails) {
 
         this.id = companyDetails.getId();

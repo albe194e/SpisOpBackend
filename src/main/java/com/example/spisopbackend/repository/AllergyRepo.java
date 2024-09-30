@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AllergyRepo extends JpaRepository<Allergy, Integer> {
 
+    Allergy findAllergyByName(String name);
 }

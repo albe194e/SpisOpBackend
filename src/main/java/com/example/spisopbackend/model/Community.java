@@ -24,4 +24,23 @@ public class Community {
     // Users in the Community
     @ManyToMany(mappedBy = "communities")
     private Set<User> users;
+
+    public Community(String name, User createdBy) {
+        this.setName(name);
+        this.createdBy = createdBy;
+    }
+    public Community() {
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+    }
+
+    public void setName(String name) {
+
+        //Add validation here
+        this.name = name;
+    }
+
+
 }
