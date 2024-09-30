@@ -21,5 +21,13 @@ public class Allergy {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    public Allergy(String name, String icon, String description) {
+        this.setName(name);
+        this.setIcon(icon);
+        this.setDescription(description);
+    }
+    public Allergy() {
+    }
 }
 
