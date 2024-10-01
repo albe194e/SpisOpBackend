@@ -1,5 +1,6 @@
 package com.example.spisopbackend.service;
 
+import com.example.spisopbackend.Exceptions.RepositoryException;
 import com.example.spisopbackend.dto.CompanyDTO;
 import com.example.spisopbackend.model.Company;
 import com.example.spisopbackend.repository.CompanyRepo;
@@ -24,7 +25,7 @@ public class CompanyService {
         return companyRepo.save(company);
     }
 
-    public Company updateCompany(int id, Company companyDetails) {
+    public Optional<Company> updateCompany(int id, Company companyDetails) {
 
         Optional<Company> foundCompany = companyRepo.findById(id);
 
@@ -32,12 +33,23 @@ public class CompanyService {
             return null;
         }
         foundCompany.ifPresent(company -> company.updateCompany(companyDetails));
-
-        return companyRepo.save(foundCompany.get());
+        Company updatedCompany = companyRepo.save(foundCompany.get());
+        return Optional.of(companyRepo.save(foundCompany.get()));
     }
 
-    public  void deleteCompany(int id) {
+    public void deleteCompany(int id) throws RepositoryException {
+        // Check if user exists, throw exception if not
+        Optional<Company> foundCompany = companyRepo.findById(id);
+        foundCompany.orElseThrow();
+
+        // Delete user
         companyRepo.deleteById(id);
+
+        // Check if user was deleted
+        Optional<Company> deletedCompany = companyRepo.findById(id);
+        if (deletedCompany.isPresent()) {
+            throw new RepositoryException("Company was not deleted");
+        }
     }
 
     public CompanyDTO toDto(Company company) {
