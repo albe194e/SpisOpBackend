@@ -28,6 +28,7 @@ public class Community {
     public Community(String name, User createdBy) {
         this.setName(name);
         this.createdBy = createdBy;
+        this.users = Set.of();
     }
     public Community() {
     }
