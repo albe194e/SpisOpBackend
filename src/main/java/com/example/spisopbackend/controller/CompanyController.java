@@ -31,6 +31,16 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/company")
+    public ResponseEntity<Iterable<Company>> getAllCompanies() {
+        try {
+            return ResponseEntity.ok(companyService.getAllCompanies());
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     //-----------------POST----------------\\
     @PostMapping("/company")
     public ResponseEntity<CompanyDTO> createCompany(@RequestBody Company company) {

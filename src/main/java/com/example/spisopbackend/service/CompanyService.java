@@ -21,6 +21,9 @@ public class CompanyService {
         return foundCompany.orElse(null);
     }
 
+   public Iterable<Company> getAllCompanies() {
+        return companyRepo.findAll();
+    }
     public Company createCompany(Company company) {
         return companyRepo.save(company);
     }
