@@ -192,7 +192,9 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-
+    public void addCommunity(Community community) {
+        this.communities.add(community);
+    }
     public void updateUser(User userDetails) {
 
         this.email = userDetails.getEmail();

@@ -2,6 +2,8 @@ package com.example.spisopbackend.model;
 
 import lombok.Data;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -21,9 +23,8 @@ public class Community {
     @JoinColumn(name = "createdById")
     private User createdBy;
 
-    // Users in the Community
     @ManyToMany(mappedBy = "communities")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     public Community(String name, User createdBy) {
         this.setName(name);

@@ -1,23 +1,28 @@
 package com.example.spisopbackend.service;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.example.spisopbackend.Exceptions.RepositoryException;
-import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.dto.UserDTO;
+import com.example.spisopbackend.model.Community;
 import com.example.spisopbackend.model.User;
+import com.example.spisopbackend.repository.CommunityRepo;
 import com.example.spisopbackend.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
 
 
+
+
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private CommunityRepo communityRepo;
     public Optional<User> getUserById(String id) {
 
         return userRepo.findById(id);
@@ -29,6 +34,28 @@ public class UserService {
         User savedUser = userRepo.save(user);
         return Optional.of(savedUser);
     }
+
+    @Transactional
+    public void addUserToCommunity(String userId, int communityId) throws RepositoryException {
+        Community community = communityRepo.findById(communityId)
+                .orElseThrow(() -> new RepositoryException("Community not found with ID: " + communityId));
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RepositoryException("User not found with ID: " + userId));
+
+
+        // Add community to user and update the relationship in community
+        user.addCommunity(community);
+        userRepo.save(user); // Persist the user
+
+        // Validate the addition
+        Set<User> users = community.getUsers();
+        if (!users.contains(user)) {
+            throw new RepositoryException("User was not added to community");
+        }
+
+    }
+
 
     public Optional<User> updateUser(String id, User userDetails) {
 
