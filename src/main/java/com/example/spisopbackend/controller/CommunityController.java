@@ -4,7 +4,6 @@ import com.example.spisopbackend.Exceptions.RepositoryException;
 import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.dto.CommunityDTO;
 import com.example.spisopbackend.model.Community;
-import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ public class CommunityController {
             Optional<Community> community = communityService.getCommunityById(id);
             return ResponseEntity.ok(communityService.toDto(community.orElseThrow()));
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -58,10 +56,8 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(communityService.toDto(newCommunity.orElseThrow()));
         } catch (ValidationException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -74,10 +70,8 @@ public class CommunityController {
             return ResponseEntity.ok()
                     .body(communityService.toDto(updatedCommunity.orElseThrow()));
         } catch (ValidationException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -89,12 +83,9 @@ public class CommunityController {
             communityService.deleteCommunity(id);
             return ResponseEntity.ok().build();
         } catch (RepositoryException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 }
