@@ -1,15 +1,14 @@
 package com.example.spisopbackend.runner;
 
 import com.example.spisopbackend.service.DatabaseService;
+import com.example.spisopbackend.utils.aspects.logs.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DatabaseCommandLineRunner implements CommandLineRunner {
+public class DatabaseCommandLineRunner implements Logger, CommandLineRunner {
 
     @Autowired
     private DatabaseService databaseService;
@@ -23,9 +22,9 @@ public class DatabaseCommandLineRunner implements CommandLineRunner {
             String activeProfile = environment.getActiveProfiles()[0];
             if ("local".equals(activeProfile)) {
                 databaseService.resetDatabase();
-                System.out.println("Database has been reset and seeded.");
+                log.info("Database has been reset and seeded.");
             } else {
-                System.out.println("The clean-seed command is only allowed in the local environment.");
+                log.warn("The clean-seed command is only allowed in the local environment.");
             }
         }
     }

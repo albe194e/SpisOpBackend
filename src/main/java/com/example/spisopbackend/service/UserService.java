@@ -6,10 +6,12 @@ import com.example.spisopbackend.model.Community;
 import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.repository.CommunityRepo;
 import com.example.spisopbackend.repository.UserRepo;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,23 +27,29 @@ public class UserService {
     private CommunityRepo communityRepo;
     public Optional<User> getUserById(String id) {
 
+
         return userRepo.findById(id);
 
     }
 
     public Optional<User> createUser(User user) {
 
-        User savedUser = userRepo.save(user);
-        return Optional.of(savedUser);
+        Optional<User> existingUser = userRepo.findById(user.getId());
+        if (existingUser.isPresent()) {
+            throw new EntityExistsException("User already exists");
+        }
+        User createdUser = userRepo.save(user);
+
+        return Optional.of(createdUser);
     }
 
     @Transactional
-    public void addUserToCommunity(String userId, int communityId) throws RepositoryException {
+    public void addUserToCommunity(String userId, int communityId) throws RepositoryException{
         Community community = communityRepo.findById(communityId)
-                .orElseThrow(() -> new RepositoryException("Community not found with ID: " + communityId));
+                .orElseThrow(() -> new NoSuchElementException("Community not found with ID: " + communityId));
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RepositoryException("User not found with ID: " + userId));
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
 
 
         // Add community to user and update the relationship in community

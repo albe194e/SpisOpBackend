@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ExceptionHandlingAspect {
+public class EndpointExceptionHandlingAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(EndpointExceptionHandlingAspect.class);
 
     @Around("@annotation(handleExceptions)")
     public Object handleExceptions(ProceedingJoinPoint pjp, HandleExceptions handleExceptions) {
