@@ -178,6 +178,9 @@ public class User {
     public void setProfilePicture(String profilePicture) {
 
 
+        if (profilePicture == null || profilePicture.isEmpty()) {
+            return;
+        }
         // Check if the file extension is valid
         String extension = profilePicture.substring(profilePicture.lastIndexOf('.') + 1).toUpperCase();
         try {
