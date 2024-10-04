@@ -56,11 +56,6 @@ public class UserService {
         user.addCommunity(community);
         userRepo.save(user); // Persist the user
 
-        // Validate the addition
-        Set<User> users = community.getUsers();
-        if (!users.contains(user)) {
-            throw new RepositoryException("User was not added to community");
-        }
 
     }
 
