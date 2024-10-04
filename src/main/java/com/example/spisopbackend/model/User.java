@@ -3,16 +3,21 @@ package com.example.spisopbackend.model;
 import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.utils.enums.AcceptedImageFormats;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "User")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
-
     @Id
+    @EqualsAndHashCode.Include
     private String id;
 
     @Column(length = 255)
@@ -33,29 +38,27 @@ public class User {
     @Column
     private boolean isAdmin;
 
-
-
     @ManyToOne
     @JoinColumn(name = "addressId")
     private Address address;
 
-    // User-Community Many-to-Many
+    // Initialize collections to prevent NullPointerException
     @ManyToMany
     @JoinTable(
             name = "User_CommunityGroup",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "communityGroupId")
     )
-    private Set<Community> communities;
+    private Set<Community> communities = new HashSet<>();
 
-    // User-Company Many-to-Many
     @ManyToMany
     @JoinTable(
             name = "User_Company",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "companyId")
     )
-    private Set<Company> companies;
+    private Set<Company> companies = new HashSet<>();
+
 
     public User(String id, String firstName, String lastName, String email, String username, String profilePicture, boolean isAdmin) {
         this.id = id;
