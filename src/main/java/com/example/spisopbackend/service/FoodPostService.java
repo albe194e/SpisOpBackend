@@ -26,6 +26,7 @@ public class FoodPostService {
         foodPostDTO.setAuthorCompany(foodPost.getAuthorCompany());
         foodPostDTO.setCommunity(foodPost.getCommunity());
         foodPostDTO.setAllergies(foodPost.getAllergies());
+        foodPostDTO.setLastUpdated(foodPost.getLastUpdated());
         return foodPostDTO;
     }
 

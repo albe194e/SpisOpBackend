@@ -33,8 +33,6 @@ public class User {
     @Column
     private boolean isAdmin;
 
-
-
     @ManyToOne
     @JoinColumn(name = "addressId")
     private Address address;
