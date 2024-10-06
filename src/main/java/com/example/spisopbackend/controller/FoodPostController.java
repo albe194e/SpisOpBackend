@@ -55,6 +55,14 @@ public class FoodPostController {
         return foodPostService.toDto(savedFoodPost);
     }
 
+    @PostMapping("/foodpost")
+    public FoodPostDTO createFoodPost(@RequestBody FoodPost foodPost) {
+
+        System.out.println(foodPost);
+        FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
+        return foodPostService.toDto(savedFoodPost);
+    }
+
     //-----------------PUT-----------------\\
     @PutMapping("/foodposts/{id}")
     public FoodPostDTO updateFoodPost(@PathVariable int id, @RequestBody FoodPost foodPostDetails) {

@@ -23,8 +23,7 @@ public class FoodPostService {
         foodPostDTO.setDescription(foodPost.getDescription());
         foodPostDTO.setPrice(foodPost.getPrice());
         foodPostDTO.setAuthorUser(foodPost.getAuthorUser());
-        foodPostDTO.setAuthorCompany(foodPost.getAuthorCompany());
-        foodPostDTO.setCommunity(foodPost.getCommunity());
+        foodPostDTO.setOrganization(foodPost.getOrganization());
         foodPostDTO.setAllergies(foodPost.getAllergies());
         return foodPostDTO;
     }
@@ -43,7 +42,7 @@ public class FoodPostService {
 
     public List<FoodPost> getCummunityFoodPosts(int id) {
 
-        return foodPostRepo.findByCommunity_Id(id);
+        return foodPostRepo.findByOrganization_Id(id);
     }
 
     public FoodPost saveFoodPost(FoodPost foodPost) {

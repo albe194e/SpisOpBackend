@@ -1,25 +1,17 @@
 package com.example.spisopbackend.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.*;
 import java.util.Set;
 
-@Data
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "Company")
-public class Company {
-
-    @Id
-    @Column(length = 36)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(length = 255)
-    private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "addressId")
-    private Address address;
+public class Company extends Organization{
 
     // Company-Managers Many-to-Many
     @ManyToMany
@@ -28,6 +20,7 @@ public class Company {
             joinColumns = @JoinColumn(name = "companyId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
+    @JsonBackReference
     private Set<User> managers;
 
     public Company(String name) {

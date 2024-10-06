@@ -53,7 +53,7 @@ public class UserService {
 
 
         // Add community to user and update the relationship in community
-        user.addCommunity(community);
+        user.addOrganization(community);
         userRepo.save(user); // Persist the user
 
 
@@ -98,8 +98,7 @@ public class UserService {
         userDTO.setProfilePicture(user.getProfilePicture());
         userDTO.setAdmin(user.isAdmin());
         userDTO.setAddress(user.getAddress());
-        userDTO.setCommunities(user.getCommunities());
-        userDTO.setCompanies(user.getCompanies());
+        userDTO.setOrganizations(user.getOrganizations());
         return userDTO;
     }
 }

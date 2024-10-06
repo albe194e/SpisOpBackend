@@ -2,6 +2,8 @@ package com.example.spisopbackend.model;
 
 import com.example.spisopbackend.Exceptions.ValidationException;
 import com.example.spisopbackend.utils.enums.AcceptedImageFormats;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,22 +44,14 @@ public class User {
     @JoinColumn(name = "addressId")
     private Address address;
 
-    // Initialize collections to prevent NullPointerException
     @ManyToMany
     @JoinTable(
-            name = "User_CommunityGroup",
+            name = "User_Organizations",
             joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "communityGroupId")
+            inverseJoinColumns = @JoinColumn(name = "organizationId")
     )
-    private Set<Community> communities = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "User_Company",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "companyId")
-    )
-    private Set<Company> companies = new HashSet<>();
+    @JsonManagedReference
+    private Set<Organization> organizations = new HashSet<>(); // This can hold both Community and Company
 
 
     public User(String id, String firstName, String lastName, String email, String username, String profilePicture, boolean isAdmin) {
@@ -198,8 +192,8 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public void addCommunity(Community community) {
-        this.communities.add(community);
+    public void addOrganization(Organization org) {
+        this.organizations.add(org);
     }
     public void updateUser(User userDetails) {
 
@@ -210,8 +204,7 @@ public class User {
         this.profilePicture = userDetails.getProfilePicture();
         this.isAdmin = userDetails.isAdmin();
         this.address = userDetails.getAddress();
-        this.communities = userDetails.getCommunities();
-        this.companies = userDetails.getCompanies();
+        this.organizations = userDetails.getOrganizations();
 
     }
 }

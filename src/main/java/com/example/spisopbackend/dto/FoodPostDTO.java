@@ -3,6 +3,7 @@ package com.example.spisopbackend.dto;
 import com.example.spisopbackend.model.Allergy;
 import com.example.spisopbackend.model.Community;
 import com.example.spisopbackend.model.Company;
+import com.example.spisopbackend.model.Organization;
 import com.example.spisopbackend.model.User;
 import lombok.Data;
 
@@ -17,7 +18,6 @@ public class FoodPostDTO {
     private BigDecimal price;
     private User authorUser; // Reference to UserDto
     private LocalDateTime createdAt, lastUpdated;
-    private Company authorCompany; // Reference to CompanyDto
-    private Community community; // Reference to CommunityDto
+    private Organization organization;
     private Set<Allergy> allergies; // Many-to-Many relationship
 }
