@@ -95,5 +95,13 @@ public class DatabaseService {
         foodPost.setLastUpdated(LocalDateTime.now());
         foodPost.setImage("https://farumpizzaburgerhouse.dk/files/mad/pizza-1.png");
         foodPostRepo.save(foodPost);
+
+        // Seed example food post 2
+        FoodPost foodPost2 = new FoodPost("Hawaii Pizza", "Delicious hawaii pizza with fresh ingredients", new BigDecimal("40"));
+        foodPost2.setOrganization(company);
+        foodPost2.setCreatedAt(LocalDateTime.now());
+        foodPost2.setLastUpdated(LocalDateTime.now());
+        foodPost2.setImage("https://dagrofa-dam.s3.eu-central-1.amazonaws.com/PROD/600x600/4001724039082.600x600.jpg");
+        foodPostRepo.save(foodPost2);
     }
 }
