@@ -65,7 +65,7 @@ public class FoodPost {
         this.allergies.add(allergy);
     }
 
-    public void updateFoodPost(FoodPost foodPostDetails) {
+    public void update(FoodPost foodPostDetails) {
 
         this.id = foodPostDetails.getId();
         this.image = foodPostDetails.getImage();

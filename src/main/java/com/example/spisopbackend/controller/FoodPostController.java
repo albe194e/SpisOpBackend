@@ -1,13 +1,18 @@
 package com.example.spisopbackend.controller;
 
-import com.example.spisopbackend.dto.FoodPostDTO;
-import com.example.spisopbackend.model.FoodPost;
+import com.example.spisopbackend.Exceptions.RepositoryException;
+import com.example.spisopbackend.Exceptions.ResourceNotFoundException;
+import com.example.spisopbackend.Exceptions.ValidationException;
+import com.example.spisopbackend.dto.foodpost.FoodPostDTO;
+import com.example.spisopbackend.dto.foodpost.NewFoodPostDTO;
 import com.example.spisopbackend.service.FoodPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 public class FoodPostController {
@@ -18,61 +23,72 @@ public class FoodPostController {
     //-----------------GET-----------------\\
     @GetMapping("/foodposts")
     public List<FoodPostDTO> getFoodPosts() {
-        List<FoodPost> foodPosts = foodPostService.getFoodPosts();
-
-        System.out.println("1111 foodPosts");
-
-        return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
+        return foodPostService.getFoodPosts();
     }
 
     @GetMapping("/foodposts/{id}")
-    public FoodPostDTO getFoodPostById(@PathVariable int id) {
-        FoodPost foodPost = foodPostService.getFoodPostById(id);
-        return foodPostService.toDto(foodPost);
+    public ResponseEntity<FoodPostDTO> getFoodPostById(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(foodPostService.getFoodPostById(id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/foodposts/user/{userId}")
-    public List<FoodPostDTO> getFoodPostsByUserId(@PathVariable String userId) {
-        List<FoodPost> foodPosts = foodPostService.getFoodPostsByUserId(userId);
-        return foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList();
+    public ResponseEntity<List<FoodPostDTO>> getFoodPostsByUserId(@PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(foodPostService.getFoodPostsByUserId(userId));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
+
     @GetMapping("/community/{id}/foodposts")
     public ResponseEntity<List<FoodPostDTO>> getCommunityFoodPosts(@PathVariable int id) {
-
-        List<FoodPost> foodPosts = foodPostService.getCummunityFoodPosts(id);
-        return ResponseEntity.ok(foodPosts.stream().map(foodPost -> foodPostService.toDto(foodPost)).toList());
+        try {
+            return ResponseEntity.ok(foodPostService.getCummunityFoodPosts(id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     //-----------------POST----------------\\
-    @PostMapping("/foodpost/community")
-    public FoodPostDTO createFoodPostForCommunity(@RequestBody FoodPost foodPost) {
-        FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
-        return foodPostService.toDto(savedFoodPost);
-    }
-    @PostMapping("/foodpost/company")
-    public FoodPostDTO createFoodPostForCompany(@RequestBody FoodPost foodPost) {
-        FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
-        return foodPostService.toDto(savedFoodPost);
-    }
-
     @PostMapping("/foodpost")
-    public FoodPostDTO createFoodPost(@RequestBody FoodPost foodPost) {
+    public ResponseEntity<FoodPostDTO> createFoodPost(@RequestBody NewFoodPostDTO foodPost) {
 
-        System.out.println(foodPost);
-        FoodPost savedFoodPost = foodPostService.saveFoodPost(foodPost);
-        return foodPostService.toDto(savedFoodPost);
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                                 .body(foodPostService.saveFoodPost(foodPost));
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     //-----------------PUT-----------------\\
     @PutMapping("/foodposts/{id}")
-    public FoodPostDTO updateFoodPost(@PathVariable int id, @RequestBody FoodPost foodPostDetails) {
-
-        FoodPost updatedFoodPost = foodPostService.updateFoodPost(id, foodPostDetails);
-        return foodPostService.toDto(updatedFoodPost);
+    public ResponseEntity<FoodPostDTO> updateFoodPost(@PathVariable int id, @RequestBody NewFoodPostDTO foodPostDetails) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .body(foodPostService.updateFoodPost(id, foodPostDetails));
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
     //-----------------DELETE--------------\\
     @DeleteMapping("/foodposts/{id}")
-    public void deleteFoodPost(@PathVariable int id) {
-        foodPostService.deleteFoodPost(id);
+    public ResponseEntity<Void> deleteFoodPost(@PathVariable int id) {
+        try {
+            foodPostService.deleteFoodPost(id);
+            return ResponseEntity.ok().build();
+        } catch (RepositoryException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

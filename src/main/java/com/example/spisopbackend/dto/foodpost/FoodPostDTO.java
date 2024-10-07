@@ -1,4 +1,4 @@
-package com.example.spisopbackend.dto;
+package com.example.spisopbackend.dto.foodpost;
 
 import com.example.spisopbackend.model.Allergy;
 import com.example.spisopbackend.model.Community;
