@@ -31,11 +31,13 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @GetMapping("/user/{userId}/owmed_communities")
     public ResponseEntity<List<CommunityDTO>> getCommunitiesCreatedBy(@PathVariable String userId) {
         List<Community> communities = communityService.getCommunitiesByCreatedById(userId);
         return ResponseEntity.ok(communities.stream().map(community -> communityService.toDto(community)).toList());
     }
+
     @GetMapping("/user/{userId}/communities")
     public ResponseEntity<List<CommunityDTO>> getMembershipCommunities(@PathVariable String userId) {
         List<Community> communities = communityService.getCommunitiesByUserId(userId);

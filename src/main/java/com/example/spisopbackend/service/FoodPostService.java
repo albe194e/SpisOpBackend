@@ -1,8 +1,18 @@
 package com.example.spisopbackend.service;
 
-import com.example.spisopbackend.dto.FoodPostDTO;
+import com.example.spisopbackend.Exceptions.RepositoryException;
+import com.example.spisopbackend.Exceptions.ResourceNotFoundException;
+import com.example.spisopbackend.dto.foodpost.FoodPostDTO;
+import com.example.spisopbackend.dto.foodpost.NewFoodPostDTO;
+import com.example.spisopbackend.model.Community;
 import com.example.spisopbackend.model.FoodPost;
+import com.example.spisopbackend.model.Organization;
+import com.example.spisopbackend.model.User;
 import com.example.spisopbackend.repository.FoodPostRepo;
+import com.example.spisopbackend.repository.OrganizationRepo;
+import com.example.spisopbackend.repository.UserRepo;
+
+import org.hibernate.id.OptimizableGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,56 +24,97 @@ public class FoodPostService {
 
     @Autowired
     private FoodPostRepo foodPostRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private OrganizationRepo organizationRepo;
 
-    public FoodPostDTO toDto(FoodPost foodPost) {
-        FoodPostDTO foodPostDTO = new FoodPostDTO();
-        foodPostDTO.setId(foodPost.getId());
-        foodPostDTO.setImage(foodPost.getImage());
-        foodPostDTO.setTitle(foodPost.getTitle());
-        foodPostDTO.setDescription(foodPost.getDescription());
-        foodPostDTO.setPrice(foodPost.getPrice());
-        foodPostDTO.setAuthorUser(foodPost.getAuthorUser());
-        foodPostDTO.setAuthorCompany(foodPost.getAuthorCompany());
-        foodPostDTO.setCommunity(foodPost.getCommunity());
-        foodPostDTO.setAllergies(foodPost.getAllergies());
-        foodPostDTO.setLastUpdated(foodPost.getLastUpdated());
-        return foodPostDTO;
+    public List<FoodPostDTO> getFoodPosts() {
+        return foodPostRepo.findAll().stream().map(fp -> toDto(fp)).toList();
     }
 
-    public List<FoodPost> getFoodPosts() {
-        return foodPostRepo.findAll();
+    public FoodPostDTO getFoodPostById(int id) {
+        Optional<FoodPost> fp = foodPostRepo.findById(id);
+        if (fp.isEmpty()) {
+            throw new ResourceNotFoundException("Could not find Food post by: " + id);
+        }
+        return toDto(fp.get());
     }
 
-    public FoodPost getFoodPostById(int id) {
-        return foodPostRepo.findById(id).orElse(null);
+    public List<FoodPostDTO> getFoodPostsByUserId(String userId) {
+        return foodPostRepo.findByAuthorUserId(userId).stream().map(fp -> toDto(fp)).toList();
     }
 
-    public List<FoodPost> getFoodPostsByUserId(String userId) {
-        return foodPostRepo.findByAuthorUserId(userId);
+    public List<FoodPostDTO> getCummunityFoodPosts(int id) {
+        return foodPostRepo.findByOrganization_Id(id).stream().map(fp -> toDto(fp)).toList();
     }
 
-    public List<FoodPost> getCummunityFoodPosts(int id) {
-
-        return foodPostRepo.findByCommunity_Id(id);
+    public FoodPostDTO saveFoodPost(NewFoodPostDTO fp) {
+        
+        FoodPost foodPost = toEntity(fp);
+        return toDto(foodPostRepo.save(foodPost));
     }
 
-    public FoodPost saveFoodPost(FoodPost foodPost) {
-        return foodPostRepo.save(foodPost);
-    }
-
-    public FoodPost updateFoodPost(int id, FoodPost foodPostDetails) {
+    public FoodPostDTO updateFoodPost(int id, NewFoodPostDTO foodPostDetails) {
         Optional<FoodPost> foundFoodPost = foodPostRepo.findById(id);
 
         if (foundFoodPost.isEmpty()) {
             return null;
         }
-        foundFoodPost.ifPresent(foodPost ->  foodPost.updateFoodPost(foodPostDetails));
+        FoodPost newFp = toEntity(foodPostDetails);
+        foundFoodPost.ifPresent(foodPost ->  foodPost.update(newFp));
+        FoodPost updatedFoodPost = foodPostRepo.save(foundFoodPost.get());
 
-        return foodPostRepo.save(foundFoodPost.get());
+        return toDto(updatedFoodPost);
     }
-    public void deleteFoodPost(int id) {
+    public void deleteFoodPost(int id) throws RepositoryException {
+        Optional<FoodPost> foundFp = foodPostRepo.findById(id);
+        if (foundFp.isEmpty()) {
+            throw new ResourceNotFoundException("Could not find foodpost: " + id + " to delete");
+        }
+
         foodPostRepo.deleteById(id);
+
+        Optional<FoodPost> deletedFp = foodPostRepo.findById(id);
+        if (deletedFp.isPresent()) {
+            throw new RepositoryException("Community was not deleted");
+        }
     }
 
+    //Helpers
+    private FoodPostDTO toDto(FoodPost fp) {
+        FoodPostDTO foodPostDTO = new FoodPostDTO();
+        foodPostDTO.setId(fp.getId());
+        foodPostDTO.setImage(fp.getImage());
+        foodPostDTO.setTitle(fp.getTitle());
+        foodPostDTO.setDescription(fp.getDescription());
+        foodPostDTO.setPrice(fp.getPrice());
+        foodPostDTO.setAuthorUser(fp.getAuthorUser());
+        foodPostDTO.setOrganization(fp.getOrganization());
+        foodPostDTO.setAllergies(fp.getAllergies());
+        foodPostDTO.setLastUpdated(fp.getLastUpdated());
+        return foodPostDTO;
+    }
 
+    private FoodPost toEntity(NewFoodPostDTO dto) {
+        FoodPost fp = new FoodPost();
+        fp.setTitle(dto.getTitle());
+        fp.setDescription(dto.getDescription());
+        fp.setImage(dto.getImage());
+        fp.setPrice(dto.getPrice());
+        
+        Optional<User> author = userRepo.findById(dto.getAuthorUserId());
+        Optional<Organization> org = organizationRepo.findById(dto.getOrganizationId());
+        if (author.isEmpty()){
+            throw new ResourceNotFoundException("Could not find author (user)");
+        }
+        if (org.isEmpty()){
+            throw new ResourceNotFoundException("Could not find organization by id: " + dto.getOrganizationId());
+        }
+
+        fp.setAuthorUser(author.get());
+        fp.setOrganization(org.get());
+
+        return fp;
+    }
 }

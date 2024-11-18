@@ -46,6 +46,7 @@ public class DatabaseService {
         foodPostRepo.deleteAll();
         communityRepo.deleteAll();
         companyRepo.deleteAll();
+
         userRepo.deleteAll();
 
         // Seed admin user
@@ -89,7 +90,7 @@ public class DatabaseService {
         // Seed example food post
         FoodPost foodPost = new FoodPost("Matador Pizza", "Delicious matador pizza with fresh ingredients", new BigDecimal("35"));
         foodPost.setAuthorUser(admin);
-        foodPost.setCommunity(community);
+        foodPost.setOrganization(community);
         foodPost.setCreatedAt(LocalDateTime.now());
         foodPost.setLastUpdated(LocalDateTime.now());
         foodPost.setImage("https://farumpizzaburgerhouse.dk/files/mad/pizza-1.png");
@@ -97,7 +98,7 @@ public class DatabaseService {
 
         // Seed example food post 2
         FoodPost foodPost2 = new FoodPost("Hawaii Pizza", "Delicious hawaii pizza with fresh ingredients", new BigDecimal("40"));
-        foodPost2.setAuthorCompany(company);
+        foodPost2.setOrganization(company);
         foodPost2.setCreatedAt(LocalDateTime.now());
         foodPost2.setLastUpdated(LocalDateTime.now());
         foodPost2.setImage("https://dagrofa-dam.s3.eu-central-1.amazonaws.com/PROD/600x600/4001724039082.600x600.jpg");

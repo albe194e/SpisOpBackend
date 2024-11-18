@@ -3,7 +3,6 @@ package com.example.spisopbackend.model;
 import com.example.spisopbackend.Exceptions.ValidationException;
 import lombok.Data;
 import jakarta.persistence.*;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -41,12 +40,8 @@ public class FoodPost {
     private User authorUser;
 
     @ManyToOne
-    @JoinColumn(name = "authorCompanyId")
-    private Company authorCompany;
-
-    @ManyToOne
-    @JoinColumn(name = "communityId")
-    private Community community;
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 
     // FoodPost-Allergy Many-to-Many
     @ManyToMany
@@ -70,7 +65,7 @@ public class FoodPost {
         this.allergies.add(allergy);
     }
 
-    public void updateFoodPost(FoodPost foodPostDetails) {
+    public void update(FoodPost foodPostDetails) {
 
         this.id = foodPostDetails.getId();
         this.image = foodPostDetails.getImage();
@@ -78,8 +73,7 @@ public class FoodPost {
         this.description = foodPostDetails.getDescription();
         this.price = foodPostDetails.getPrice();
         this.authorUser = foodPostDetails.getAuthorUser();
-        this.authorCompany = foodPostDetails.getAuthorCompany();
-        this.community = foodPostDetails.getCommunity();
+        this.organization = foodPostDetails.getOrganization();
         this.allergies = foodPostDetails.getAllergies();
         this.setLastUpdated();
     }

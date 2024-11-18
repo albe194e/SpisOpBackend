@@ -13,6 +13,9 @@ Before clean seeding make sure your application is not running.
 To clean-seed the local database run the following command:
 ```mvn spring-boot:run -Dspring-boot.run.arguments=clean-seed```
 
+for using vs code try this:
+```mvn spring-boot:run "-Dspring-boot.run.arguments=clean-seed"```
+
 After running the command, and it says "Database has been reset and seeded" then stop script by pressing `ctrl + c` and run the project again.
 
 ## Testing the project

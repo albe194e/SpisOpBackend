@@ -11,6 +11,6 @@ public interface FoodPostRepo extends JpaRepository<FoodPost, Integer> {
 
     List<FoodPost> findByAuthorUserId(String userId);
 
-    List<FoodPost> findByCommunity_Id(int id);
+    List<FoodPost> findByOrganization_Id(int id);
 
 }

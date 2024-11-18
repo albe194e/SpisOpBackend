@@ -1,8 +1,10 @@
-package com.example.spisopbackend.model;
+package com.example.spisopbackend.model.notifications;
 
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import com.example.spisopbackend.model.FoodPost;
 
 @Data
 @Entity
@@ -16,7 +18,7 @@ public class Notification {
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timestamp;
-
+    
     @ManyToOne
     @JoinColumn(name = "postId")
     private FoodPost post;
